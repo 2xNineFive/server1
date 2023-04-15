@@ -1,21 +1,28 @@
 const express = require("express");
+const cors = require('cors')
 
 const server = express();
 
-server.get("/names", (req, res) => {
-  // a server can only give one response at a time
-  res.json({
-    message: ["Anna", "Billy"],
-  });
+const corsOptions = {
+  origin : "http://127.0.0.1:5555"
+}
 
-  // that is why this line returns an error
-  // res.send("Hello Universe!");
-});
+server.use(cors(corsOptions));
+
+// server.get("/names", (req, res) => {
+//   // a server can only give one response at a time
+//   res.json({
+//     message: ["Anna", "Billy"],
+//   });
+
+//   // that is why this line returns an error
+//   // res.send("Hello Universe!");
+// });
 
 
 
 
-server.get("/mvp", (req, res) => {
+server.get("/mvps", (req, res) => {
   // a server can only give one response at a time
   res.json({
     message: [
@@ -699,13 +706,32 @@ let mvps = [
 
 
 
-server.get('/mvp/:year', (req, res) => {
+server.get('/mvps/year/:year', (req, res) => {
   const {year} = req.params 
   const targetYear = mvps.find(mvp => mvp.year === year)
   res.json(targetYear);
 })
 
 
+server.get("/mvps/player/:player", (req, res) => {
+  const {player} = req.params;
+  const targetName = mvps.find(mvp => {
+   return mvp.player.replaceAll(" ", "").toLowerCase() === player 
+
+  })
+  res.json((targetName));
+});
+
+
+
+
+
+
+
+/* The above code is starting a server and listening on port 8080. Once the server is running, it will
+log a message to the console saying "The server is running at PORT 8080". */
 server.listen(8080, () => {
   console.log("The server is running at PORT 8080");
 });
+
+
