@@ -1,3 +1,4 @@
+let canSubmit = true;
 const searchBtn = document.getElementById("all");
 const resetBtn = document.getElementById("reset");
 
@@ -17,26 +18,20 @@ async function search() {
   const inputData = input.value;
 
   //   console.log(inputData * 1);
-  if (!isNaN(inputData * 1)) {
+  if (!isNaN(inputData * 1) && canSubmit === true) {
     const x = await fetch(`http://localhost:8080/mvps/year/${inputData}`);
     const data = await x.json();
-
     renderData(data, "year");
-  } else {
+    canSubmit = false;
+  } else if (isNaN(inputData * 1) && canSubmit === true) {
     const newData = inputData.replaceAll(" ", "").toLowerCase();
-    //   console.log(newData);
     const x = await fetch(`http://localhost:8080/mvps/player/${newData}`);
     const y = await x.json();
-    //   console.log(y);
-
     renderData(y, "player");
+    canSubmit = false;
   }
 
   renderInput();
-}
-
-function reset() {
-  dataContainer.innerHTML = "";
 }
 
 function renderInput() {
@@ -50,7 +45,6 @@ function renderInput() {
 // onload
 renderInput();
 
-// render functions
 function renderData(data, type) {
   if (type === "year") {
     console.log(data);
@@ -65,6 +59,8 @@ function renderData(data, type) {
     const team = document.createElement("p");
     team.innerText = data.team;
     dataContainer.appendChild(team);
+
+    dataContainer.className = "data-container";
   }
 
   if (type === "player") {
@@ -80,5 +76,15 @@ function renderData(data, type) {
     const team = document.createElement("p");
     team.innerText = data.team;
     dataContainer.appendChild(team);
+
+    dataContainer.className = "data-container";
   }
 }
+
+// reset function
+function reset() {
+  dataContainer.innerHTML = "";
+  canSubmit = true;
+  dataContainer.className = "";
+}
+
